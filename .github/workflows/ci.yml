@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch or PR supersedes the run in progress: one
+# result per change, not a queue of stale runs. Runs on main are never cancelled.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   test:
     name: test (node ${{ matrix.node }})
@@ -27,7 +33,17 @@ jobs:
       - name: syntax check every file
         run: find src test examples -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: test
-        run: npm test
+        # The suite is named file by file (`test/*.test.js`): Node 22 resolves a
+        # bare `test/` as a module and fails before running anything. The count
+        # check catches the quieter version of the same bug, a glob that matches
+        # nothing or a runner that finds zero tests and still exits 0.
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee test-output.txt
+          files=$(ls test/*.test.js | wc -l)
+          ran=$(grep -E '^(# |ℹ )tests [0-9]+' test-output.txt | tail -1 | awk '{print $3}')
+          echo "test files: $files · tests run: ${ran:-0}"
+          [ "$files" -gt 0 ] && [ "${ran:-0}" -ge "$files" ]
       - name: the demo has to actually run
         # A README example that stopped working two refactors ago is worse than
         # no example. It is checked like everything else.

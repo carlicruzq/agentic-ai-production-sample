@@ -1,0 +1,12 @@
+{
+  "name": "agentic-ai-production-sample",
+  "version": "1.0.0",
+  "description": "Dependency-free sample: LLM agent with scoped tools, closed output schema, deterministic gate, human-in-the-loop escalation and audit trail.",
+  "license": "MIT",
+  "author": "Carlos Cruz",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test",
+    "demo": "node examples/demo.js"
+  }
+}

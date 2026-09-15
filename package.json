@@ -1,12 +1,25 @@
 {
   "name": "agentic-ai-production-sample",
-  "version": "1.0.0",
-  "description": "Dependency-free sample: LLM agent with scoped tools, closed output schema, deterministic gate, human-in-the-loop escalation and audit trail.",
+  "version": "2.0.0",
+  "description": "Dependency-free sample of an LLM agent that is safe to run in production: scoped tools, closed output schema, verified evidence, a deterministic gate, human-in-the-loop escalation, bounded retries and an audit trail.",
   "license": "MIT",
   "author": "Carlos Cruz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlicruzq/agentic-ai-production-sample.git"
+  },
+  "keywords": ["llm", "agent", "tool-use", "anthropic", "claude", "guardrails",
+    "human-in-the-loop", "audit-trail", "production"],
   "engines": { "node": ">=18" },
+  "main": "src/agent.js",
   "scripts": {
-    "test": "node --test",
-    "demo": "node examples/demo.js"
+    "test": "node --test test/",
+    "demo": "node examples/demo.js",
+    "live": "node examples/live.js",
+    "check": "find src test examples -name '*.js' -print0 | xargs -0 -n1 node --check"
+  },
+  "optionalDependencies": {},
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": { "optional": true }
   }
 }
